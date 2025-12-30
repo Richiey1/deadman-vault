@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAccount } from 'wagmi';
 import Header from '@/components/layout/Header';
 import Hero from '@/components/layout/Hero';
 import TabNavigation from '@/components/layout/TabNavigation';
@@ -10,6 +11,7 @@ import ClaimTab from '@/components/vault/ClaimTab';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('create');
+  const { isConnected } = useAccount();
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -28,13 +30,34 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <Hero />
-      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <main className="py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          {renderTabContent()}
+      {/* Only show tabs and content when wallet is connected */}
+      {isConnected ? (
+        <>
+          <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+          
+          <main className="py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              {renderTabContent()}
+            </div>
+          </main>
+        </>
+      ) : (
+        <div className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-white rounded-2xl shadow-lg p-12 border border-gray-100">
+              <div className="text-6xl mb-6">🔐</div>
+              <h2 className="text-3xl font-bold text-[#0F172A] mb-4">Connect Your Wallet</h2>
+              <p className="text-gray-600 mb-8">
+                Please connect your wallet to access the Deadman Vault dashboard and manage your vaults.
+              </p>
+              <p className="text-sm text-gray-500">
+                Click the "Connect Wallet" button in the header to get started.
+              </p>
+            </div>
+          </div>
         </div>
-      </main>
+      )}
 
       {/* Footer */}
       <footer className="bg-[#0F172A] text-white py-12 mt-20">

@@ -24,17 +24,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+import Web3Provider from "@/components/Web3Provider";
+import { headers } from "next/headers";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookies = (await headers()).get('cookie')
+  
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Web3Provider cookies={cookies}>
+          {children}
+        </Web3Provider>
       </body>
     </html>
   );
