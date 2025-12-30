@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useAppKit } from '@reown/appkit/react'
+import { useAccount } from 'wagmi'
 
 export default function Header() {
+  const { open } = useAppKit()
+  const { isConnected, address } = useAccount()
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0F172A] border-b border-[#14B8A6]/30 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,8 +46,12 @@ export default function Header() {
           </nav>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Reown AppKit Account Button - shows wallet icon and address when connected */}
-            <appkit-account-button />
+            <button 
+              onClick={() => open()}
+              className="bg-gradient-to-r from-[#3B82F6] to-[#14B8A6] text-white px-4 sm:px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity font-mono"
+            >
+              {isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connect Wallet'}
+            </button>
           </div>
         </div>
       </div>
