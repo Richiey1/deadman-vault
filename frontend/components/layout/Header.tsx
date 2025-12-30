@@ -41,8 +41,8 @@ export default function Header() {
           </nav>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Reown AppKit Connect Button - shows wallet icon and address when connected */}
-            <appkit-button />
+            {/* Reown AppKit Account Button - shows wallet icon and address when connected */}
+            <appkit-account-button />
           </div>
         </div>
       </div>
