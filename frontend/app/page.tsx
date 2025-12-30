@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef } from 'react';
 import { useAccount } from 'wagmi';
 import Header from '@/components/layout/Header';
