@@ -106,35 +106,36 @@ export default function Hero({ onGetStarted }: HeroProps) {
           ></div>
           
           {/* Modal Content */}
-          <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 max-h-[80vh] overflow-y-auto">
+          <div className="relative bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 max-h-[80vh] overflow-y-auto">
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             
-            <h2 className="text-3xl font-bold text-[#0F172A] mb-4">About Deadman Vault</h2>
+            <h2 className="text-3xl font-bold mb-4">About Deadman Vault</h2>
             
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-gray-300">
               <p className="text-lg">
                 Deadman Vault is a decentralized digital inheritance system built on Base blockchain that ensures your digital assets are passed to your chosen beneficiary if you become inactive.
               </p>
               
-              <h3 className="text-xl font-bold text-[#0F172A] mt-6">How It Works</h3>
+              <h3 className="text-xl font-bold text-white mt-6">How It Works</h3>
               <ol className="list-decimal list-inside space-y-3">
-                <li><strong>Create a Vault:</strong> Set up your vault with a beneficiary address and timeout period.</li>
-                <li><strong>Deposit Assets:</strong> Store ETH in your vault securely.</li>
-                <li><strong>Stay Active:</strong> Ping your vault regularly to prove you're still active.</li>
-                <li><strong>Automatic Inheritance:</strong> If you stop pinging for the timeout period, your beneficiary can claim all funds.</li>
-                <li><strong>Proof of Claim:</strong> Beneficiaries receive an NFT certificate as proof of inheritance.</li>
+                <li><strong className="text-white">Create a Vault:</strong> Set up your vault with a beneficiary address and timeout period.</li>
+                <li><strong className="text-white">Deposit Assets:</strong> Store ETH, USDC, USDT, or other supported tokens in your vault securely.</li>
+                <li><strong className="text-white">Stay Active:</strong> Ping your vault regularly to prove you're still active.</li>
+                <li><strong className="text-white">Automatic Inheritance:</strong> If you stop pinging for the timeout period, your beneficiary can claim all funds.</li>
+                <li><strong className="text-white">Proof of Claim:</strong> Beneficiaries receive an NFT certificate as proof of inheritance.</li>
               </ol>
               
-              <h3 className="text-xl font-bold text-[#0F172A] mt-6">Key Features</h3>
+              <h3 className="text-xl font-bold text-white mt-6">Key Features</h3>
               <ul className="list-disc list-inside space-y-2">
                 <li>Fully decentralized and trustless</li>
+                <li>Support for multiple tokens (ETH, USDC, USDT, and more)</li>
                 <li>Customizable timeout periods (1 hour to 10 years)</li>
                 <li>On-chain proof of claim NFTs</li>
                 <li>Built on Base for low fees and fast transactions</li>
