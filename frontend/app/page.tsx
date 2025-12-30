@@ -1,8 +1,5 @@
-'use client';
-
 import { useState, useRef } from 'react';
 import { useAccount } from 'wagmi';
-import { PlusCircle, Vault, Gift } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Hero from '@/components/layout/Hero';
 import TabNavigation from '@/components/layout/TabNavigation';
@@ -71,44 +68,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* Footer with centered tabs */}
+      {/* Footer */}
       <footer className="bg-[#0F172A] text-white py-12 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Centered Tab Links */}
-          <div className="flex justify-center items-center gap-8 mb-8">
-            <button
-              onClick={() => {
-                setActiveTab('create');
-                tabsRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="flex items-center gap-2 text-gray-300 hover:text-[#14B8A6] transition-colors"
-            >
-              <PlusCircle size={20} />
-              <span>Create Vault</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('vaults');
-                tabsRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="flex items-center gap-2 text-gray-300 hover:text-[#14B8A6] transition-colors"
-            >
-              <Vault size={20} />
-              <span>My Vaults</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('claim');
-                tabsRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="flex items-center gap-2 text-gray-300 hover:text-[#14B8A6] transition-colors"
-            >
-              <Gift size={20} />
-              <span>Claim Inheritance</span>
-            </button>
-          </div>
-          
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+          <div className="text-center text-gray-400 text-sm">
             © 2025 Deadman Vault. All rights reserved.
           </div>
         </div>
