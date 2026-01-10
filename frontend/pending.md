@@ -42,26 +42,26 @@ NFT:     0xc319b525592725194cA6254EE09866AA7b1bD5Ab
   - [x] Network configuration (already in wagmi.ts)
 
 ### 2. Contract Integration
-- [ ] Add contract ABIs to `lib/abi/`
-  - [ ] DeadmanVault.json
-  - [ ] DeadmanVaultFactory.json
-  - [ ] ProofOfClaimNFT.json
+- [x] Add contract ABIs to `lib/abi/` ✅
+  - [x] DeadmanVault.ts ✅
+  - [x] DeadmanVaultFactory.ts ✅
+  - [x] ProofOfClaimNFT.ts ✅
 - [x] Create `lib/contracts.ts` with addresses and configs ✅
-- [ ] Implement custom hooks in `hooks/`:
-  - [ ] `useFactory.ts` - Factory contract interactions
-  - [ ] `useDeadmanVault.ts` - Vault contract interactions
-  - [ ] `useNFT.ts` - NFT contract interactions
+- [x] Implement custom hooks in `hooks/`: ✅
+  - [x] `useFactory.ts` - Factory contract interactions ✅
+  - [x] `useDeadmanVault.ts` - Vault contract interactions ✅
+  - [x] `useNFT.ts` - NFT contract interactions ✅
 
 ### 3. Core Features to Implement
 
 #### Create Vault Tab
-- [ ] Form to create new vault:
-  - [ ] Beneficiary address input
-  - [ ] Timeout period selector (presets: 1 day, 7 days, 30 days, 90 days, custom)
-  - [ ] Optional initial deposit amount
-- [ ] Deploy vault via Factory contract
-- [ ] Show transaction status and confirmation
-- [ ] Display newly created vault address
+- [x] Form to create new vault: ✅
+  - [x] Beneficiary address input ✅
+  - [x] Timeout period selector (presets: 1 week, 1 month, 3 months, 6 months, 1 year, custom) ✅
+  - [ ] Optional initial deposit amount (removed - can deposit later)
+- [x] Deploy vault via Factory contract ✅
+- [x] Show transaction status and confirmation ✅
+- [x] Display newly created vault address ✅
 
 #### My Vaults Tab
 - [ ] Fetch all vaults owned by connected wallet
@@ -125,15 +125,18 @@ NFT:     0xc319b525592725194cA6254EE09866AA7b1bD5Ab
 
 ### Phase 1: Foundation (Critical)
 1. [ ] Set up environment variables
-2. [ ] Add contract ABIs
+2. [x] Add contract ABIs ✅
 3. [x] Create contract configuration file ✅
-4. [ ] Authorize Factory to mint NFTs
+4. [x] Create constants.ts with contract addresses ✅
+5. [ ] Authorize Factory to mint NFTs
 
 ### Phase 2: Core Functionality
-1. [ ] Implement useFactory hook
-2. [ ] Implement Create Vault feature
-3. [ ] Implement My Vaults display
-4. [ ] Implement basic vault actions (deposit, withdraw, ping)
+1. [x] Implement useFactory hook ✅
+2. [x] Implement useDeadmanVault hook ✅
+3. [x] Implement useNFT hook ✅
+4. [x] Implement Create Vault feature ✅
+5. [ ] Implement My Vaults display
+6. [ ] Implement basic vault actions (deposit, withdraw, ping)
 
 ### Phase 3: Advanced Features
 1. [ ] Implement Claim functionality
@@ -151,17 +154,18 @@ NFT:     0xc319b525592725194cA6254EE09866AA7b1bD5Ab
 ## 📝 Key Files to Create/Update
 
 ### To Create:
-- [ ] `lib/abi/DeadmanVault.json`
-- [ ] `lib/abi/DeadmanVaultFactory.json`
-- [ ] `lib/abi/ProofOfClaimNFT.json`
+- [x] `lib/abi/DeadmanVault.ts` ✅
+- [x] `lib/abi/DeadmanVaultFactory.ts` ✅
+- [x] `lib/abi/ProofOfClaimNFT.ts` ✅
 - [x] `lib/contracts.ts` ✅
-- [ ] `hooks/useFactory.ts`
-- [ ] `hooks/useDeadmanVault.ts`
-- [ ] `hooks/useNFT.ts`
+- [x] `config/constants.ts` ✅
+- [x] `hooks/useFactory.ts` ✅
+- [x] `hooks/useDeadmanVault.ts` ✅
+- [x] `hooks/useNFT.ts` ✅
 - [ ] `.env.local`
 
 ### To Update:
-- [ ] `components/vault/CreateVaultTab.tsx` - Implement form and logic
+- [x] `components/vault/CreateVaultTab.tsx` - Implement form and logic ✅
 - [ ] `components/vault/MyVaultsTab.tsx` - Implement vault list and actions
 - [ ] `components/vault/ClaimTab.tsx` - Implement claim interface
 - [x] `config/wagmi.ts` - Network configuration ✅
