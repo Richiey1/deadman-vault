@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 import { useUserVaults } from '@/hooks/useFactory';
 import { useVaultState, useDeadmanVault, useIsTimeoutReached } from '@/hooks/useDeadmanVault';
+import { useCountdown, formatCountdown } from '@/hooks/useCountdown';
 import { formatEther, type Address } from 'viem';
 import { NETWORK_CONFIG } from '@/config/constants';
 import DepositModal from './modals/DepositModal';
@@ -19,6 +20,108 @@ interface VaultCardData {
   timeout: bigint;
   balance: bigint;
   isTimeoutReached: boolean;
+}
+
+// Individual vault card component to handle its own countdown
+function VaultCard({ vault, onDeposit, onWithdraw, onPing, onSettings }: {
+  vault: VaultCardData;
+  onDeposit: () => void;
+  onWithdraw: () => void;
+  onPing: () => void;
+  onSettings: () => void;
+}) {
+  const countdown = useCountdown(vault.lastPing, vault.timeout);
+
+  const formatTimeAgo = (timestamp: bigint) => {
+    const seconds = Math.floor((Date.now() - Number(timestamp) * 1000) / 1000);
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+
+    if (days > 0) return `${days}d ${hours}h ago`;
+    return `${hours}h ago`;
+  };
+
+  const shortAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
+  return (
+    <div
+      className={`bg-[#1E293B]/50 backdrop-blur-sm rounded-xl p-6 border transition-colors ${
+        countdown.isExpired
+          ? 'border-red-500/40 hover:border-red-500/60'
+          : 'border-[#3B82F6]/20 hover:border-[#14B8A6]/40'
+      }`}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-lg font-semibold text-white">
+              Vault {shortAddress(vault.address)}
+            </h3>
+            {countdown.isExpired && (
+              <span className="px-2 py-1 bg-red-500/20 text-red-300 text-xs rounded font-medium">
+                ⚠️ Expired
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-gray-400">
+            Last ping: {formatTimeAgo(vault.lastPing)}
+          </p>
+        </div>
+        <div className="mt-3 sm:mt-0 text-right">
+          <div className="text-2xl font-bold text-[#5EEAD4]">
+            {formatEther(vault.balance)} ETH
+          </div>
+          <div className={`text-sm font-semibold ${countdown.isExpired ? 'text-red-400' : 'text-[#14B8A6]'}`}>
+            {formatCountdown(countdown)}
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4 p-3 bg-[#0F172A]/50 rounded-lg">
+        <p className="text-sm text-gray-400">Beneficiary</p>
+        <p className="text-white font-mono text-sm">{shortAddress(vault.beneficiary)}</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <button
+          onClick={onDeposit}
+          className="px-4 py-2 bg-[#3B82F6] text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+        >
+          Deposit
+        </button>
+        <button
+          onClick={onWithdraw}
+          disabled={vault.balance === BigInt(0)}
+          className="px-4 py-2 bg-[#0F172A] border border-[#3B82F6]/30 text-white rounded-lg hover:border-[#14B8A6] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Withdraw
+        </button>
+        <button
+          onClick={onPing}
+          className="px-4 py-2 bg-[#14B8A6] text-white rounded-lg hover:bg-teal-600 transition-colors text-sm font-medium"
+        >
+          Ping
+        </button>
+        <button
+          onClick={onSettings}
+          className="px-4 py-2 bg-[#0F172A] border border-[#3B82F6]/30 text-white rounded-lg hover:border-[#14B8A6] transition-colors text-sm font-medium"
+        >
+          Settings
+        </button>
+      </div>
+
+      <a
+        href={`${NETWORK_CONFIG.explorerUrl}/address/${vault.address}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-3 text-xs text-blue-400 hover:text-blue-300 block"
+      >
+        View on BaseScan →
+      </a>
+    </div>
+  );
 }
 
 export default function MyVaultsTab() {
@@ -72,30 +175,6 @@ export default function MyVaultsTab() {
       setIsLoadingDetails(true);
     }
   }, [vaultDetailsQueries]);
-
-  const formatTimeAgo = (timestamp: bigint) => {
-    const seconds = Math.floor((Date.now() - Number(timestamp) * 1000) / 1000);
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-
-    if (days > 0) return `${days}d ${hours}h ago`;
-    return `${hours}h ago`;
-  };
-
-  const getTimeRemaining = (lastPing: bigint, timeout: bigint) => {
-    const elapsed = Math.floor((Date.now() - Number(lastPing) * 1000) / 1000);
-    const remaining = Number(timeout) - elapsed;
-    const days = Math.floor(remaining / 86400);
-    const hours = Math.floor((remaining % 86400) / 3600);
-
-    if (remaining <= 0) return { text: 'Expired', isExpired: true };
-    if (days > 0) return { text: `${days}d ${hours}h left`, isExpired: false };
-    return { text: `${hours}h left`, isExpired: false };
-  };
-
-  const shortAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-  };
 
   const handleModalClose = () => {
     setActiveModal(null);
@@ -172,100 +251,28 @@ export default function MyVaultsTab() {
         </div>
       ) : (
         <div className="space-y-4">
-          {vaultsData.map((vault) => {
-            const timeRemaining = getTimeRemaining(vault.lastPing, vault.timeout);
-            
-            return (
-              <div
-                key={vault.address}
-                className={`bg-[#1E293B]/50 backdrop-blur-sm rounded-xl p-6 border transition-colors ${
-                  vault.isTimeoutReached
-                    ? 'border-red-500/40 hover:border-red-500/60'
-                    : 'border-[#3B82F6]/20 hover:border-[#14B8A6]/40'
-                }`}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-lg font-semibold text-white">
-                        Vault {shortAddress(vault.address)}
-                      </h3>
-                      {vault.isTimeoutReached && (
-                        <span className="px-2 py-1 bg-red-500/20 text-red-300 text-xs rounded font-medium">
-                          ⚠️ Expired
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-400">
-                      Last ping: {formatTimeAgo(vault.lastPing)}
-                    </p>
-                  </div>
-                  <div className="mt-3 sm:mt-0 text-right">
-                    <div className="text-2xl font-bold text-[#5EEAD4]">
-                      {formatEther(vault.balance)} ETH
-                    </div>
-                    <div className={`text-sm ${timeRemaining.isExpired ? 'text-red-400' : 'text-gray-400'}`}>
-                      {timeRemaining.text}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-4 p-3 bg-[#0F172A]/50 rounded-lg">
-                  <p className="text-sm text-gray-400">Beneficiary</p>
-                  <p className="text-white font-mono text-sm">{shortAddress(vault.beneficiary)}</p>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <button
-                    onClick={() => {
-                      setSelectedVaultAddress(vault.address);
-                      setActiveModal('deposit');
-                    }}
-                    className="px-4 py-2 bg-[#3B82F6] text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
-                  >
-                    Deposit
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedVaultAddress(vault.address);
-                      setActiveModal('withdraw');
-                    }}
-                    disabled={vault.balance === BigInt(0)}
-                    className="px-4 py-2 bg-[#0F172A] border border-[#3B82F6]/30 text-white rounded-lg hover:border-[#14B8A6] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Withdraw
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedVaultAddress(vault.address);
-                      setActiveModal('ping');
-                    }}
-                    className="px-4 py-2 bg-[#14B8A6] text-white rounded-lg hover:bg-teal-600 transition-colors text-sm font-medium"
-                  >
-                    Ping
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedVaultAddress(vault.address);
-                      setActiveModal('settings');
-                    }}
-                    className="px-4 py-2 bg-[#0F172A] border border-[#3B82F6]/30 text-white rounded-lg hover:border-[#14B8A6] transition-colors text-sm font-medium"
-                  >
-                    Settings
-                  </button>
-                </div>
-
-                <a
-                  href={`${NETWORK_CONFIG.explorerUrl}/address/${vault.address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 text-xs text-blue-400 hover:text-blue-300"
-                >
-                  View on BaseScan →
-                </a>
-              </div>
-            );
-          })}
+          {vaultsData.map((vault) => (
+            <VaultCard
+              key={vault.address}
+              vault={vault}
+              onDeposit={() => {
+                setSelectedVaultAddress(vault.address);
+                setActiveModal('deposit');
+              }}
+              onWithdraw={() => {
+                setSelectedVaultAddress(vault.address);
+                setActiveModal('withdraw');
+              }}
+              onPing={() => {
+                setSelectedVaultAddress(vault.address);
+                setActiveModal('ping');
+              }}
+              onSettings={() => {
+                setSelectedVaultAddress(vault.address);
+                setActiveModal('settings');
+              }}
+            />
+          ))}
         </div>
       )}
 
