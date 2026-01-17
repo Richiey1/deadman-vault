@@ -116,6 +116,27 @@ export function useTimeoutLimits() {
 }
 
 /**
+ * Hook to get vault owner
+ */
+export function useVaultOwner(vaultAddress?: Address) {
+  const { data: owner, isLoading, error } = useReadContract({
+    address: FACTORY_ADDRESS,
+    abi: DeadmanVaultFactoryABI,
+    functionName: "getVaultOwner",
+    args: vaultAddress ? [vaultAddress] : undefined,
+    query: {
+      enabled: !!vaultAddress,
+    },
+  });
+
+  return {
+    owner: owner as Address | undefined,
+    isLoading,
+    error,
+  };
+}
+
+/**
  * Hook to watch for VaultCreated events
  */
 export function useWatchVaultCreated(
